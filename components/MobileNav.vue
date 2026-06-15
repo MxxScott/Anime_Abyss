@@ -157,6 +157,6 @@ const closeMenu = () => {
 
 .drawer-slide-enter-from,
 .drawer-slide-leave-to {
-  transform: translateX(100%);
+  transform: translateX(-100%);
 }
 </style>
