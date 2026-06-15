@@ -1101,3 +1101,53 @@ footer {
         opacity: .2
     }
 }
+/* ── Trailing cursor glow ─────────────────────────────────── */
+.cursor-glow {
+    width: 320px;
+    height: 320px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9997;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    opacity: .32;
+    background: radial-gradient(circle, rgba(168, 85, 247, .28) 0%, rgba(232, 121, 249, .12) 35%, transparent 70%);
+    filter: blur(12px);
+    transition: opacity .3s;
+}
+
+/* ── Three.js hero visual ─────────────────────────────────── */
+.hero-visual {
+    position: absolute;
+    right: 2%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(320px, 38vw, 560px);
+    aspect-ratio: 1 / 1;
+    z-index: 2;
+    pointer-events: none;
+}
+
+@media (max-width: 900px) {
+    .hero-visual { display: none; }
+}
+
+/* ── Scroll reveal (entry + exit) ─────────────────────────── */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity .7s cubic-bezier(.22, .61, .36, 1), transform .7s cubic-bezier(.22, .61, .36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+}
+
+.reveal-in {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+}
