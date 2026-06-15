@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <nav class="site-nav">
     <a href="#" class="logo">Anime Abyss<span>アニメ・アビス</span></a>
     <ul>
       <li><a href="#trending">Trending</a></li>
@@ -9,4 +9,13 @@
       <li><a href="#" class="nav-cta">Watch Now</a></li>
     </ul>
   </nav>
+  <MobileNav />
 </template>
+
+<style scoped>
+@media (max-width: 768px) {
+  .site-nav {
+    display: none !important;
+  }
+}
+</style>

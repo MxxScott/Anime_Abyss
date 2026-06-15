@@ -37,6 +37,12 @@ body {
     cursor: none;
 }
 
+@media (pointer: coarse) {
+    body {
+        cursor: auto;
+    }
+}
+
 .cursor {
     width: 12px;
     height: 12px;
@@ -1150,4 +1156,281 @@ footer {
 
 @media (prefers-reduced-motion: reduce) {
     .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ── Mobile Responsive ─────────────────────────────────── */
+@media (max-width: 1024px) {
+  nav {
+    padding: 16px 40px;
+  }
+
+  .logo {
+    font-size: 1.1rem;
+  }
+
+  section {
+    padding: 60px 40px;
+  }
+
+  .hero {
+    padding: 100px 40px 60px;
+  }
+
+  .marquee-item {
+    padding: 0 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  nav {
+    padding: 16px 20px;
+  }
+
+  .logo {
+    font-size: 0.95rem;
+  }
+
+  .logo span {
+    font-size: 0.5rem;
+  }
+
+  nav ul {
+    display: none;
+  }
+
+  section {
+    padding: 48px 20px;
+  }
+
+  .hero {
+    padding: 80px 20px 50px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+  }
+
+  .hero-sub {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .hero-stats {
+    justify-content: center;
+    gap: 32px;
+  }
+
+  /* Featured grid */
+  .featured-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    min-height: auto;
+    gap: 12px;
+  }
+
+  .feat-main {
+    grid-row: auto;
+    min-height: 280px;
+  }
+
+  /* Trending grid */
+  .anime-grid,
+  .sk-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 14px;
+  }
+
+  /* Genres grid */
+  .genres-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+
+  .genre-card {
+    padding: 18px 12px;
+  }
+
+  .genre-icon {
+    font-size: 1.5rem;
+  }
+
+  .genre-name {
+    font-size: 0.75rem;
+  }
+
+  /* Seasonal */
+  .seasonal-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .season-item {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .s-thumb {
+    width: 48px;
+    height: 64px;
+  }
+
+  /* Newsletter */
+  #newsletter {
+    padding: 48px 20px;
+  }
+
+  .nl-form {
+    flex-direction: column;
+  }
+
+  .nl-input {
+    border-right: 1px solid rgba(168, 85, 247, 0.3);
+  }
+
+  /* Footer */
+  footer {
+    padding: 36px 20px 24px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .divider {
+    margin: 0 20px;
+  }
+
+  .marquee-wrap {
+    padding: 10px 0;
+  }
+
+  .marquee-item {
+    padding: 0 16px;
+    font-size: 0.65rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(1.3rem, 3vw, 2rem);
+  }
+}
+
+@media (max-width: 480px) {
+  nav {
+    padding: 14px 16px;
+  }
+
+  .logo {
+    font-size: 0.85rem;
+  }
+
+  section {
+    padding: 36px 16px;
+  }
+
+  .hero {
+    padding: 60px 16px 40px;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.5rem, 4vw, 2.4rem);
+  }
+
+  .hero-eyebrow {
+    font-size: 0.6rem;
+  }
+
+  .hero-sub {
+    font-size: 0.9rem;
+  }
+
+  .btn-primary,
+  .btn-outline {
+    padding: 12px 28px;
+    font-size: 0.75rem;
+  }
+
+  .anime-grid,
+  .sk-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+  }
+
+  .genres-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .genre-card {
+    padding: 14px 10px;
+  }
+
+  .genre-icon {
+    font-size: 1.2rem;
+  }
+
+  .season-item {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .s-num {
+    font-size: 0.9rem;
+    min-width: 24px;
+  }
+
+  .s-thumb {
+    width: 40px;
+    height: 54px;
+  }
+
+  .s-title {
+    font-size: 0.8rem;
+  }
+
+  .s-studio {
+    font-size: 0.6rem;
+  }
+
+  #newsletter {
+    padding: 36px 16px;
+  }
+
+  .nl-input,
+  .nl-btn {
+    font-size: 0.75rem;
+    padding: 12px 16px;
+  }
+
+  .divider {
+    margin: 0 16px;
+  }
+
+  .marquee-item {
+    padding: 0 12px;
+    font-size: 0.6rem;
+  }
+
+  .stat-num {
+    font-size: 1.4rem;
+  }
 }

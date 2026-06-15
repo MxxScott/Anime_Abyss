@@ -1,13 +1,14 @@
 <template>
-  <div ref="glow" class="cursor-glow" aria-hidden="true" />
-  <div ref="dot" class="cursor" />
-  <div ref="ring" class="cursor-ring" />
+  <div v-if="!isTouchDevice" ref="glow" class="cursor-glow" aria-hidden="true" />
+  <div v-if="!isTouchDevice" ref="dot" class="cursor" />
+  <div v-if="!isTouchDevice" ref="ring" class="cursor-ring" />
 </template>
 
 <script setup>
 const dot = ref(null)
 const ring = ref(null)
 const glow = ref(null)
+const isTouchDevice = ref(false)
 let raf = 0
 let mx = 0, my = 0, rx = 0, ry = 0, gx = 0, gy = 0
 
@@ -32,23 +33,30 @@ function tick() {
   rx += (mx - rx) * 0.13
   ry += (my - ry) * 0.13
   if (ring.value) { ring.value.style.left = rx + 'px'; ring.value.style.top = ry + 'px' }
-  gx += (mx - gx) * 0.07 // glow trails further behind
+  gx += (mx - gx) * 0.07
   gy += (my - gy) * 0.07
   if (glow.value) { glow.value.style.left = gx + 'px'; glow.value.style.top = gy + 'px' }
   raf = requestAnimationFrame(tick)
 }
 
 onMounted(() => {
-  window.addEventListener('mousemove', onMove)
-  document.addEventListener('mouseover', onOver)
-  document.addEventListener('mouseout', onOut)
-  tick()
+  const isCoarsePointer = matchMedia('(pointer: coarse)').matches
+  isTouchDevice.value = isCoarsePointer || ('ontouchstart' in window)
+
+  if (!isTouchDevice.value) {
+    window.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseover', onOver)
+    document.addEventListener('mouseout', onOut)
+    tick()
+  }
 })
 
 onBeforeUnmount(() => {
-  cancelAnimationFrame(raf)
-  window.removeEventListener('mousemove', onMove)
-  document.removeEventListener('mouseover', onOver)
-  document.removeEventListener('mouseout', onOut)
+  if (!isTouchDevice.value) {
+    cancelAnimationFrame(raf)
+    window.removeEventListener('mousemove', onMove)
+    document.removeEventListener('mouseover', onOver)
+    document.removeEventListener('mouseout', onOut)
+  }
 })
 </script>
