@@ -5,14 +5,14 @@
 <script setup>
 // Client-only Three.js scene: a wireframe "abyss portal" icosahedron wrapped in a
 // particle halo, with subtle mouse parallax. Loaded from CDN so no install is
-// required; if it can't load (offline), the CSS .hero-orb remains as the fallback.
+// it's bundled via `npm i three`; if it fails to load the CSS .hero-orb remains as fallback.
 const host = ref(null)
 let cleanup = () => {}
 
 onMounted(async () => {
   let THREE
   try {
-    THREE = await import(/* @vite-ignore */ 'https://unpkg.com/three@0.160.0/build/three.module.js')
+    THREE = await import('three')
   } catch {
     return // offline / blocked → keep the CSS orb fallback
   }
