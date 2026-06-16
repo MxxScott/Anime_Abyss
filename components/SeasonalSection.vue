@@ -37,6 +37,10 @@
         :key="a.mal_id ?? i"
         v-reveal="(i % 6) * 50"
         class="season-item"
+        role="button"
+        tabindex="0"
+        @click="open(a)"
+        @keydown.enter="open(a)"
       >
         <div class="s-num">{{ String(i + 1).padStart(2, '0') }}</div>
         <img class="s-thumb" :src="thumb(a)" :alt="a.title" loading="lazy">
@@ -48,6 +52,12 @@
             <span v-if="a.score" class="s-score">★ {{ a.score.toFixed(1) }}</span>
           </div>
         </div>
+        <button
+          class="s-fav"
+          :class="{ on: has(a.mal_id) }"
+          :aria-label="has(a.mal_id) ? 'Remove from My List' : 'Add to My List'"
+          @click.stop="toggle(a)"
+        >{{ has(a.mal_id) ? '♥' : '♡' }}</button>
       </div>
     </div>
   </section>
@@ -55,6 +65,9 @@
 
 <script setup>
 const { jFetch } = useJikan()
+const { open } = useAnimeDetail()
+const { has, toggle } = useFavourites()
+
 const tabs = [
   { value: 'all', label: 'All' },
   { value: 'TV', label: 'TV' },

@@ -18,16 +18,26 @@
         v-reveal="i * 90"
         class="feat-card"
         :class="i === 0 ? 'feat-main' : 'feat-small'"
+        role="button"
+        tabindex="0"
+        @click="open(a)"
+        @keydown.enter="open(a)"
       >
         <img :src="img(a)" :alt="a.title" loading="lazy">
         <div class="feat-overlay" />
+        <button
+          class="feat-fav"
+          :class="{ on: isFav(a) }"
+          :aria-label="isFav(a) ? 'Remove from My List' : 'Add to My List'"
+          @click.stop="toggle(a)"
+        >{{ isFav(a) ? '♥' : '♡' }}</button>
         <div class="feat-content">
           <span class="feat-tag">{{ tag(a) }}</span>
           <div class="feat-title">{{ a.title_english || a.title }}</div>
           <p class="feat-desc">{{ synopsis(a) }}</p>
           <div v-if="i === 0" class="feat-actions">
-            <a :href="a.url" target="_blank" rel="noopener" class="btn-sm btn-sm-p">View on MAL</a>
-            <a href="#" class="btn-sm btn-sm-g">Add to List</a>
+            <a :href="a.url" target="_blank" rel="noopener" class="btn-sm btn-sm-p" @click.stop>View on MAL</a>
+            <button class="btn-sm btn-sm-g" @click.stop="open(a)">More Details</button>
           </div>
         </div>
       </div>
@@ -37,6 +47,10 @@
 
 <script setup>
 const { jFetch, wait } = useJikan()
+const { open } = useAnimeDetail()
+const { has, toggle } = useFavourites()
+const isFav = (a) => has(a.mal_id)
+
 const IDS = [5114, 1535, 23, 9253, 21]
 const items = ref([])
 const status = ref('loading')

@@ -5,5 +5,6 @@
     <SiteNav />
     <slot />
     <SiteFooter />
+    <AnimeDetailPanel />
   </div>
 </template>

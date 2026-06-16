@@ -23,5 +23,20 @@ export function useJikan() {
     throw lastErr ?? new Error('Jikan request failed')
   }
 
-  return { BASE, wait, jFetch }
+  // Full search — ordered by member count (popularity), SFW only.
+  async function searchAnime(q: string, limit = 24): Promise<any[]> {
+    if (!q || !q.trim()) return []
+    const d = await jFetch(
+      `/anime?q=${encodeURIComponent(q.trim())}&limit=${limit}&order_by=members&sort=desc&sfw=true`,
+    )
+    return d.data || []
+  }
+
+  // Full record for one anime (genres, studios, trailer, relations, etc.).
+  async function getAnimeFull(id: number): Promise<any> {
+    const d = await jFetch(`/anime/${id}/full`)
+    return d.data
+  }
+
+  return { BASE, wait, jFetch, searchAnime, getAnimeFull }
 }
