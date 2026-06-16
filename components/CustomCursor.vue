@@ -1,14 +1,13 @@
 <template>
-  <div v-if="!isTouchDevice" ref="glow" class="cursor-glow" aria-hidden="true" />
-  <div v-if="!isTouchDevice" ref="dot" class="cursor" />
-  <div v-if="!isTouchDevice" ref="ring" class="cursor-ring" />
+  <div ref="glow" class="cursor-glow" aria-hidden="true" />
+  <div ref="dot" class="cursor" />
+  <div ref="ring" class="cursor-ring" />
 </template>
 
 <script setup>
 const dot = ref(null)
 const ring = ref(null)
 const glow = ref(null)
-const isTouchDevice = ref(false)
 let raf = 0
 let mx = 0, my = 0, rx = 0, ry = 0, gx = 0, gy = 0
 
@@ -40,23 +39,19 @@ function tick() {
 }
 
 onMounted(() => {
-  const isCoarsePointer = matchMedia('(pointer: coarse)').matches
-  isTouchDevice.value = isCoarsePointer || ('ontouchstart' in window)
-
-  if (!isTouchDevice.value) {
-    window.addEventListener('mousemove', onMove)
-    document.addEventListener('mouseover', onOver)
-    document.addEventListener('mouseout', onOut)
-    tick()
-  }
+  // Desktop only: skip on touch / coarse-pointer devices (the CSS also hides
+  // the cursor elements and restores the native cursor there).
+  if (!window.matchMedia?.('(hover: hover) and (pointer: fine)').matches) return
+  window.addEventListener('mousemove', onMove)
+  document.addEventListener('mouseover', onOver)
+  document.addEventListener('mouseout', onOut)
+  tick()
 })
 
 onBeforeUnmount(() => {
-  if (!isTouchDevice.value) {
-    cancelAnimationFrame(raf)
-    window.removeEventListener('mousemove', onMove)
-    document.removeEventListener('mouseover', onOver)
-    document.removeEventListener('mouseout', onOut)
-  }
+  cancelAnimationFrame(raf)
+  window.removeEventListener('mousemove', onMove)
+  document.removeEventListener('mouseover', onOver)
+  document.removeEventListener('mouseout', onOut)
 })
 </script>

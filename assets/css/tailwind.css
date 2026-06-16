@@ -1434,3 +1434,121 @@ footer {
     font-size: 1.4rem;
   }
 }
+
+/* ── Mobile sidebar nav + hamburger + overlay ─────────────── */
+.nav-toggle { display: none; }
+.nav-overlay { display: none; }
+
+@media (max-width: 820px) {
+    nav { padding: 14px 22px; }
+
+    .nav-toggle {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 40px;
+        height: 40px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        z-index: 210;
+        padding: 0;
+    }
+    .nav-toggle span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: var(--white);
+        transition: transform .3s, opacity .3s;
+    }
+    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    nav ul {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: min(80vw, 320px);
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 6px;
+        padding: 100px 30px 30px;
+        background: rgba(8, 4, 21, .97);
+        backdrop-filter: blur(24px);
+        border-left: 1px solid var(--ghost);
+        transform: translateX(100%);
+        transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+        z-index: 200;
+    }
+    nav ul.open { transform: translateX(0); }
+    nav ul li { width: 100%; }
+    nav ul a {
+        display: block;
+        width: 100%;
+        padding: 13px 0;
+        font-size: .95rem;
+    }
+    nav ul a::after { display: none; }
+    nav ul .nav-cta {
+        display: inline-block;
+        width: auto;
+        margin-top: 14px;
+        text-align: center;
+    }
+
+    .nav-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 150;
+        background: rgba(2, 0, 10, .6);
+        backdrop-filter: blur(2px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .35s;
+    }
+    .nav-overlay.show { opacity: 1; pointer-events: auto; }
+}
+
+/* ── Disable custom cursor on touch / coarse-pointer devices ─ */
+@media (hover: none), (pointer: coarse) {
+    body, a, button,
+    .btn-primary, .btn-outline, .btn-sm, .nl-btn, .s-tab,
+    .anime-card, .feat-card, .genre-card, .season-item {
+        cursor: auto;
+    }
+    .cursor, .cursor-ring, .cursor-glow { display: none !important; }
+}
+
+/* ── Responsive layout breakpoints ────────────────────────── */
+@media (max-width: 820px) {
+    section { padding: 64px 22px; }
+    .hero { padding: 108px 22px 64px; }
+    .divider { margin: 0 22px; }
+    #newsletter { padding: 64px 22px; }
+    footer { padding: 48px 22px 28px; }
+
+    .featured-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+        min-height: 0;
+    }
+    .feat-main { grid-row: auto; }
+    .feat-card { min-height: 300px; }
+
+    .seasonal-list { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .hero-stats { gap: 36px; }
+}
+
+@media (max-width: 480px) {
+    .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    .hero-stats { gap: 22px; flex-wrap: wrap; }
+    .nl-form { flex-direction: column; gap: 10px; }
+    .nl-input { border-right: 1px solid rgba(168, 85, 247, .3); }
+    .footer-bottom { justify-content: center; text-align: center; }
+}
