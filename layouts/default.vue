@@ -6,5 +6,7 @@
     <slot />
     <SiteFooter />
     <AnimeDetailPanel />
+    <SearchOverlay />
+    <MyListPanel />
   </div>
 </template>
