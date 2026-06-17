@@ -13,8 +13,16 @@
     </button>
 
     <ul :class="{ open }">
-      <li>
-        <button class="nav-search" aria-label="Search" @click="openSearch">🔍 <span class="nav-extra-label">Search</span></button>
+      <li
+        class="nav-searchbox"
+        role="button"
+        tabindex="0"
+        aria-label="Search"
+        @click="openSearch"
+        @keydown.enter="openSearch"
+      >
+        <span class="nsb-icon" aria-hidden="true">🔍</span>
+        <input class="nsb-input" type="text" :placeholder="placeholder" readonly tabindex="-1" aria-hidden="true" />
       </li>
       <li v-for="l in links" :key="l.href"><a :href="l.href" @click="close">{{ l.label }}</a></li>
       <li>
@@ -83,10 +91,38 @@ const links = [
   { href: '#seasonal', label: 'Seasonal' },
 ]
 
-watch(open, (v) => {
-  if (import.meta.client) document.body.style.overflow = v ? 'hidden' : ''
+// ── Typewriter placeholder: types a suggestion, deletes, types the next ──
+const SUGGESTIONS = [
+  'One Piece', 'Frieren', 'Attack on Titan', 'Jujutsu Kaisen',
+  'Chainsaw Man', 'Demon Slayer', 'Solo Leveling', 'Spy x Family',
+  'Vinland Saga', 'Mushoku Tensei', 'Cowboy Bebop', 'Steins;Gate',
+]
+const placeholder = ref('Search anime…')
+let twTimer = null
+
+onMounted(() => {
+  if (!import.meta.client) return
+  const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+  if (reduce) { placeholder.value = 'Search anime…'; return }
+
+  let i = 0, j = 0, deleting = false
+  const tick = () => {
+    const word = SUGGESTIONS[i]
+    j += deleting ? -1 : 1
+    placeholder.value = word.slice(0, j) + '▏'   // partial term + caret
+    let delay = deleting ? 45 : 95
+    if (!deleting && j >= word.length) { deleting = true; delay = 1500 }       // pause on full word
+    else if (deleting && j <= 0) { deleting = false; i = (i + 1) % SUGGESTIONS.length; delay = 400 }
+    twTimer = setTimeout(tick, delay)
+  }
+  twTimer = setTimeout(tick, 700)
 })
 onBeforeUnmount(() => {
+  if (twTimer) clearTimeout(twTimer)
   if (import.meta.client) document.body.style.overflow = ''
+})
+
+watch(open, (v) => {
+  if (import.meta.client) document.body.style.overflow = v ? 'hidden' : ''
 })
 </script>
