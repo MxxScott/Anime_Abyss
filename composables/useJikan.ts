@@ -23,7 +23,6 @@ export function useJikan() {
     throw lastErr ?? new Error('Jikan request failed')
   }
 
-  // Full search — ordered by member count (popularity), SFW only.
   async function searchAnime(q: string, limit = 24): Promise<any[]> {
     if (!q || !q.trim()) return []
     const d = await jFetch(
@@ -32,11 +31,22 @@ export function useJikan() {
     return d.data || []
   }
 
-  // Full record for one anime (genres, studios, trailer, relations, etc.).
   async function getAnimeFull(id: number): Promise<any> {
     const d = await jFetch(`/anime/${id}/full`)
     return d.data
   }
 
-  return { BASE, wait, jFetch, searchAnime, getAnimeFull }
+  // A single random (SFW) anime — powers the "Random Dive" button.
+  async function randomAnime(): Promise<any> {
+    const d = await jFetch('/random/anime')
+    return d.data
+  }
+
+  // Community recommendations for a title — returns the lightweight entries.
+  async function getRecommendations(id: number, n = 8): Promise<any[]> {
+    const d = await jFetch(`/anime/${id}/recommendations`)
+    return (d.data || []).slice(0, n).map((r: any) => r.entry).filter(Boolean)
+  }
+
+  return { BASE, wait, jFetch, searchAnime, getAnimeFull, randomAnime, getRecommendations }
 }

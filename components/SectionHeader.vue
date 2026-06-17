@@ -5,9 +5,7 @@
       <h2 class="section-title">{{ title }}</h2>
       <div v-if="badge" class="api-badge"><span class="api-dot" /> Live · Jikan / MyAnimeList</div>
     </div>
-    <a v-if="viewAll" :href="viewAll.href" target="_blank" rel="noopener" class="view-all">
-      {{ viewAll.text }}
-    </a>
+    <button v-if="viewAll" class="view-all" @click="$emit('view-all')">{{ viewAll.text }}</button>
   </div>
 </template>
 
@@ -16,6 +14,7 @@ defineProps({
   label: { type: String, required: true },
   title: { type: String, required: true },
   badge: { type: Boolean, default: false },
-  viewAll: { type: Object, default: null }, // { href, text }
+  viewAll: { type: Object, default: null }, // { text }
 })
+defineEmits(['view-all'])
 </script>

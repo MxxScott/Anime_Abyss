@@ -4,7 +4,8 @@
       label="— Now Trending"
       title="Top of the Abyss"
       badge
-      :view-all="{ href: 'https://myanimelist.net/topanime.php', text: 'Full Rankings →' }"
+      :view-all="{ text: 'Full Rankings →' }"
+      @view-all="browse.open({ source: 'top', title: 'Top Anime' })"
     />
 
     <div class="trend-controls">
@@ -37,9 +38,6 @@
 
     <div v-else-if="status === 'error'" class="api-error">
       <span class="err-icon">⚠</span>Could not load trending anime.
-      <a href="https://myanimelist.net/topanime.php" target="_blank" rel="noopener" style="color:var(--neon)">
-        View on MyAnimeList →
-      </a>
     </div>
 
     <div v-else-if="!items.length" class="api-error">
@@ -60,8 +58,9 @@
 
 <script setup>
 const { jFetch } = useJikan()
+const browse = useBrowse()
 const items = ref([])
-const status = ref('loading') // loading | error | ok
+const status = ref('loading')
 const type = ref('tv')
 const filter = ref('')
 

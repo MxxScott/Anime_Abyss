@@ -1,4 +1,5 @@
-// "My List" watchlist, persisted to localStorage. Stores a slimmed anime record.
+// "My List" watchlist, persisted to localStorage. Stores a slimmed anime record
+// (incl. genres + episodes so the taste dashboard can analyse it offline).
 const KEY = 'anime-abyss:favourites'
 
 export function useFavourites() {
@@ -23,12 +24,20 @@ export function useFavourites() {
     mal_id: a.mal_id,
     title: a.title,
     title_english: a.title_english,
-    score: a.score,
+    score: a.score ?? null,
     type: a.type,
+    episodes: a.episodes ?? null,
+    genres: (a.genres || []).map((g: any) => g.name),
     images: a.images,
   })
 
   const has = (id: number) => items.value.some((a) => a.mal_id === id)
+
+  function add(anime: any) {
+    if (!anime?.mal_id || has(anime.mal_id)) return
+    items.value = [...items.value, slim(anime)]
+    persist()
+  }
 
   function toggle(anime: any) {
     if (!anime?.mal_id) return
@@ -43,5 +52,5 @@ export function useFavourites() {
     persist()
   }
 
-  return { items, has, toggle, remove }
+  return { items, has, add, toggle, remove }
 }

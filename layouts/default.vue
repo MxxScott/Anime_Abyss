@@ -8,5 +8,6 @@
     <AnimeDetailPanel />
     <SearchOverlay />
     <MyListPanel />
+    <BrowseOverlay />
   </div>
 </template>

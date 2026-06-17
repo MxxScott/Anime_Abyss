@@ -1,6 +1,11 @@
 <template>
   <section id="featured">
-    <SectionHeader label="— Editor's Choice" title="Featured Titles" :view-all="{ href: '#', text: 'Browse All →' }" />
+    <SectionHeader
+      label="— Editor's Choice"
+      title="Featured Titles"
+      :view-all="{ text: 'Browse All →' }"
+      @view-all="browse.open({ source: 'top', title: 'Top Anime' })"
+    />
 
     <div v-if="status === 'loading'" class="featured-grid">
       <div class="skeleton feat-main" />
@@ -48,6 +53,7 @@
 <script setup>
 const { jFetch, wait } = useJikan()
 const { open } = useAnimeDetail()
+const browse = useBrowse()
 const { has, toggle } = useFavourites()
 const isFav = (a) => has(a.mal_id)
 

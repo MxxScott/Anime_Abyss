@@ -49,9 +49,33 @@
             </button>
           </div>
 
-          <a v-if="data?.url" :href="data.url" target="_blank" rel="noopener" class="ad-mal-link">
-            View on MyAnimeList ↗
-          </a>
+          <!-- Trailer -->
+          <div v-if="trailerId" class="ad-trailer">
+            <button v-if="!showTrailer" class="ad-trailer-btn" @click="showTrailer = true">▶ Watch Trailer</button>
+            <div v-else class="ad-trailer-frame">
+              <iframe
+                :src="`https://www.youtube-nocookie.com/embed/${trailerId}?autoplay=1&rel=0`"
+                title="Trailer" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen
+              />
+            </div>
+          </div>
+
+          <!-- Recommendations -->
+          <div v-if="recs.length" class="ad-recs">
+            <p class="ad-recs-title">Descend Deeper</p>
+            <div class="ad-recs-row">
+              <button
+                v-for="r in recs"
+                :key="r.mal_id"
+                class="ad-rec"
+                :title="r.title"
+                @click="open(r)"
+              >
+                <img :src="recImg(r)" :alt="r.title" loading="lazy">
+                <span class="ad-rec-title">{{ r.title }}</span>
+              </button>
+            </div>
+          </div>
         </div>
       </template>
     </aside>
@@ -59,14 +83,16 @@
 </template>
 
 <script setup>
-const { isOpen, current, close } = useAnimeDetail()
-const { getAnimeFull } = useJikan()
+const { isOpen, current, close, open } = useAnimeDetail()
+const { getAnimeFull, getRecommendations } = useJikan()
 const { enabled: omdbEnabled, ratingByTitle } = useOmdb()
 const { has, toggle } = useFavourites()
 
 const data = ref(null)
 const loading = ref(false)
 const imdb = ref('')
+const recs = ref([])
+const showTrailer = ref(false)
 
 const title = computed(() => current.value?.title_english || current.value?.title || '')
 const img = computed(() =>
@@ -82,19 +108,22 @@ const genres = computed(() =>
 const studio = computed(() => data.value?.studios?.[0]?.name || '')
 const year = computed(() => data.value?.year || data.value?.aired?.prop?.from?.year || '')
 const synopsis = computed(() => (data.value?.synopsis || '').replace(/\[Written.*?\]/g, '').trim())
+const trailerId = computed(() => data.value?.trailer?.youtube_id || '')
 const fav = computed(() => (current.value ? has(current.value.mal_id) : false))
 
-function toggleFav() {
-  if (current.value) toggle(data.value || current.value)
-}
+const recImg = (r) => r.images?.webp?.image_url || r.images?.jpg?.image_url || ''
+function toggleFav() { if (current.value) toggle(data.value || current.value) }
 
 watch(current, async (a) => {
   data.value = null
   imdb.value = ''
+  recs.value = []
+  showTrailer.value = false
   if (!a?.mal_id) return
   loading.value = true
   try { data.value = await getAnimeFull(a.mal_id) } catch { /* keep list data */ }
   loading.value = false
+  getRecommendations(a.mal_id, 8).then((r) => { recs.value = r }).catch(() => {})
   if (omdbEnabled) {
     const t = data.value?.title_english || data.value?.title || a.title
     const r = await ratingByTitle(t)

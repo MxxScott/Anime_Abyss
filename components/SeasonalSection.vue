@@ -4,7 +4,8 @@
       label="— Current Season"
       :title="heading"
       badge
-      :view-all="{ href: 'https://myanimelist.net/anime/season', text: 'Full Schedule →' }"
+      :view-all="{ text: 'Full Schedule →' }"
+      @view-all="browse.open({ source: 'season', title: heading })"
     />
 
     <div class="s-tabs">
@@ -66,6 +67,7 @@
 <script setup>
 const { jFetch } = useJikan()
 const { open } = useAnimeDetail()
+const browse = useBrowse()
 const { has, toggle } = useFavourites()
 
 const tabs = [
