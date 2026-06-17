@@ -12,6 +12,9 @@
     <GenresSection />
     <div class="divider" />
 
+    <CoverCarousel />
+    <div class="divider" />
+
     <SeasonalSection />
     <NewsletterSection />
   </main>
