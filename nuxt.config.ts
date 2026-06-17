@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: [
-    '@clerk/nuxt','@nuxtjs/tailwindcss'],
+    '@clerk/nuxt','@nuxtjs/tailwindcss', '@vercel/analytics'],
   runtimeConfig: {
     public: {
       // Optional: free key from https://www.omdbapi.com to show IMDb ratings.
