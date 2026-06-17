@@ -49,7 +49,8 @@ const bodyEl = ref(null)
 function urlFor(c, p) {
   if (c.source === 'season') return `/seasons/now?page=${p}`
   if (c.source === 'genre') return `/anime?genres=${c.genreId}&order_by=members&sort=desc&sfw=true&page=${p}`
-  return `/top/anime?page=${p}` // 'top'
+  const f = c.filter ? `filter=${c.filter}&` : ''
+  return `/top/anime?${f}page=${p}` // 'top'
 }
 
 async function load() {

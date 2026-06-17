@@ -2,11 +2,14 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: [
+    '@clerk/nuxt','@nuxtjs/tailwindcss'],
   runtimeConfig: {
     public: {
       // Optional: free key from https://www.omdbapi.com to show IMDb ratings.
       omdbApiKey: process.env.NUXT_PUBLIC_OMDB_API_KEY || '',
+      whatsappUrl: process.env.NUXT_PUBLIC_WHATSAPP_URL || '',
+      telegramUrl: process.env.NUXT_PUBLIC_TELEGRAM_URL || '',
     },
   },
   app: {

@@ -9,5 +9,8 @@
     <SearchOverlay />
     <MyListPanel />
     <BrowseOverlay />
+    <MobileDock />
+    <Toast />
+    <FavouritesSync />
   </div>
 </template>

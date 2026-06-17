@@ -1,10 +1,11 @@
-// "My List" watchlist, persisted to localStorage. Stores a slimmed anime record
-// (incl. genres + episodes so the taste dashboard can analyse it offline).
+// "My List" watchlist. Signed out → localStorage. Signed in → also synced to the
+// user's Clerk unsafeMetadata so the list (and derived suggestions) follow the account.
 const KEY = 'anime-abyss:favourites'
 
 export function useFavourites() {
   const items = useState<any[]>('favourites', () => [])
   const hydrated = useState<boolean>('favourites-hydrated', () => false)
+  const { isSignedIn, user } = useUser()
 
   if (import.meta.client && !hydrated.value) {
     try {
@@ -14,11 +15,19 @@ export function useFavourites() {
     hydrated.value = true
   }
 
-  function persist() {
+  function persistLocal() {
     if (import.meta.client) {
       try { localStorage.setItem(KEY, JSON.stringify(items.value)) } catch { /* quota */ }
     }
   }
+  function persistRemote() {
+    if (import.meta.client && isSignedIn?.value && user?.value) {
+      user.value
+        .update({ unsafeMetadata: { ...(user.value.unsafeMetadata || {}), favourites: items.value } })
+        .catch(() => { /* offline / rate-limited */ })
+    }
+  }
+  function persist() { persistLocal(); persistRemote() }
 
   const slim = (a: any) => ({
     mal_id: a.mal_id,
@@ -38,7 +47,6 @@ export function useFavourites() {
     items.value = [...items.value, slim(anime)]
     persist()
   }
-
   function toggle(anime: any) {
     if (!anime?.mal_id) return
     items.value = has(anime.mal_id)
@@ -46,11 +54,12 @@ export function useFavourites() {
       : [...items.value, slim(anime)]
     persist()
   }
-
   function remove(id: number) {
     items.value = items.value.filter((a) => a.mal_id !== id)
     persist()
   }
+  // Replace the whole list (local only) — used by the sign-in sync after merging.
+  function setAll(arr: any[]) { items.value = arr; persistLocal() }
 
-  return { items, has, add, toggle, remove }
+  return { items, has, add, toggle, remove, setAll }
 }

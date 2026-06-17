@@ -28,7 +28,21 @@
           <span v-if="count" class="nav-badge">{{ count }}</span>
         </button>
       </li>
-      <li><a href="#" class="nav-cta" @click="close">Watch Now</a></li>
+      <li class="nav-auth">
+        <ClientOnly>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button class="nav-search nav-login">Login</button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <button class="nav-cta nav-cta-btn">Sign Up</button>
+            </SignUpButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton :after-sign-out-url="'/'" />
+          </SignedIn>
+        </ClientOnly>
+      </li>
     </ul>
   </nav>
 
