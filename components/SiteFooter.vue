@@ -23,20 +23,16 @@
         <h4>Account</h4>
         <ul>
           <ClientOnly>
-            <SignedOut>
+            <template v-if="isLoaded && !isSignedIn">
               <li><SignUpButton mode="modal"><button class="footer-link">Sign Up</button></SignUpButton></li>
               <li><SignInButton mode="modal"><button class="footer-link">Login</button></SignInButton></li>
-            </SignedOut>
-            <SignedIn>
+            </template>
+            <template v-else-if="isLoaded && isSignedIn">
               <li><button class="footer-link" @click="manage">Manage Account</button></li>
-            </SignedIn>
+              <li><button class="footer-link" @click="manage">Settings</button></li>
+            </template>
           </ClientOnly>
           <li><button class="footer-link" @click="myList.open()">My List</button></li>
-          <ClientOnly>
-            <SignedIn>
-              <li><button class="footer-link" @click="manage">Settings</button></li>
-            </SignedIn>
-          </ClientOnly>
         </ul>
       </div>
     </div>
@@ -60,6 +56,7 @@ const browse = useBrowse()
 const myList = useMyList()
 const toast = useToast()
 const clerk = useClerk()
+const { isLoaded, isSignedIn } = useUser()
 const cfg = useRuntimeConfig().public
 
 const scrollTo = (sel) => {

@@ -30,17 +30,17 @@
       </li>
       <li class="nav-auth">
         <ClientOnly>
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button class="nav-search nav-login">Login</button>
-            </SignInButton>
-            <SignUpButton mode="modal">
-              <button class="nav-cta nav-cta-btn">Sign Up</button>
-            </SignUpButton>
-          </SignedOut>
-          <SignedIn>
-            <UserButton :after-sign-out-url="'/'" />
-          </SignedIn>
+          <template v-if="isLoaded">
+            <UserButton v-if="isSignedIn" :after-sign-out-url="'/'" />
+            <template v-else>
+              <SignInButton mode="modal">
+                <button class="nav-search nav-login">Login</button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button class="nav-cta nav-cta-btn">Sign Up</button>
+              </SignUpButton>
+            </template>
+          </template>
         </ClientOnly>
       </li>
     </ul>
@@ -55,6 +55,7 @@ const myList = useMyList()
 const { items } = useFavourites()
 const { randomAnime } = useJikan()
 const { open: openDetail } = useAnimeDetail()
+const { isLoaded, isSignedIn } = useUser()
 const count = computed(() => items.value.length)
 
 const open = ref(false)

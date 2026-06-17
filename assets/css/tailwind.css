@@ -1962,7 +1962,21 @@ footer {
 
 /* ── Nav auth ─────────────────────────────────────────────── */
 .nav-auth { display: flex; align-items: center; gap: 14px; }
-.nav-login { color: var(--white); }
+.nav-login {
+    color: var(--white);
+    border: 1px solid rgba(168, 85, 247, .45);
+    padding: 8px 22px;
+    border-radius: 2px;
+    background: rgba(124, 58, 237, .06);
+    letter-spacing: .14em;
+    transition: border-color .3s, background .3s, box-shadow .3s, color .3s;
+}
+.nav-login:hover {
+    border-color: var(--neon);
+    background: rgba(124, 58, 237, .16);
+    box-shadow: 0 0 18px rgba(232, 121, 249, .28);
+    color: var(--spark);
+}
 .nav-cta-btn {
     border: none; cursor: none; font-family: 'Rajdhani', sans-serif;
     background: linear-gradient(135deg, var(--pulse), var(--neon));
