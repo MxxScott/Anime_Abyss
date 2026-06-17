@@ -34,6 +34,7 @@ body {
     color: var(--white);
     font-family: 'Rajdhani', sans-serif;
     overflow-x: hidden;
+    overflow-y: scroll;
     cursor: none;
 }
 
@@ -2013,7 +2014,8 @@ footer {
         display: flex;
         align-items: stretch;
         gap: 4px;
-        width: min(440px, calc(100vw - 24px));
+        width: min(440px, calc(100% - 24px));
+        max-width: calc(100vw - 24px);
         padding: 7px;
         border-radius: 22px;
         background: rgba(10, 6, 26, .82);
