@@ -26,13 +26,16 @@ function init() {
 function draw() {
   const c = cv.value
   if (!c || !ctx) return
+  // Pink specks on dark; deeper violet on light so they stay visible.
+  const light = document.documentElement.dataset.theme === 'light'
+  const rgb = light ? '124, 58, 237' : '240, 171, 252'
   ctx.clearRect(0, 0, c.width, c.height)
   for (const s of stars) {
     s.t += s.s * 0.02
     const o = s.o * (0.5 + 0.5 * Math.sin(s.t))
     ctx.beginPath()
     ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
-    ctx.fillStyle = `rgba(240,171,252,${o})`
+    ctx.fillStyle = `rgba(${rgb},${light ? o * 0.55 : o})`
     ctx.fill()
   }
   raf = requestAnimationFrame(draw)

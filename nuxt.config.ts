@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: [
-    '@clerk/nuxt','@nuxtjs/tailwindcss', '@vercel/analytics'],
+    '@clerk/nuxt', '@nuxtjs/tailwindcss'],
   runtimeConfig: {
     public: {
       // Optional: free key from https://www.omdbapi.com to show IMDb ratings.
@@ -31,6 +31,14 @@ export default defineNuxtConfig({
         {
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@200;400;700&display=swap',
+        },
+      ],
+      script: [
+        {
+          // No-flash theme: apply saved theme before first paint (defaults to dark).
+          innerHTML:
+            "(function(){try{var t=localStorage.getItem('anime-abyss:theme');document.documentElement.dataset.theme=(t==='light'?'light':'dark');}catch(e){document.documentElement.dataset.theme='dark';}})();",
+          tagPosition: 'head',
         },
       ],
     },

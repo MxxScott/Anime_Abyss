@@ -36,6 +36,18 @@
           <span v-if="count" class="nav-badge">{{ count }}</span>
         </button>
       </li>
+      <li>
+        <ClientOnly>
+          <button
+            class="nav-search nav-theme"
+            :aria-label="theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+            @click="toggle"
+          >
+            <span class="nav-theme-icon" aria-hidden="true">{{ theme === 'dark' ? '☀' : '☾' }}</span>
+            <span class="nav-extra-label">{{ theme === 'dark' ? 'Light' : 'Dark' }}</span>
+          </button>
+        </ClientOnly>
+      </li>
       <li class="nav-auth">
         <ClientOnly>
           <template v-if="isLoaded">
@@ -64,6 +76,7 @@ const { items } = useFavourites()
 const { randomAnime } = useJikan()
 const { open: openDetail } = useAnimeDetail()
 const { isLoaded, isSignedIn } = useUser()
+const { theme, toggle } = useTheme()
 const count = computed(() => items.value.length)
 
 const open = ref(false)
@@ -109,9 +122,9 @@ onMounted(() => {
   const tick = () => {
     const word = SUGGESTIONS[i]
     j += deleting ? -1 : 1
-    placeholder.value = word.slice(0, j) + '▏'   // partial term + caret
+    placeholder.value = word.slice(0, j) + '▏'
     let delay = deleting ? 45 : 95
-    if (!deleting && j >= word.length) { deleting = true; delay = 1500 }       // pause on full word
+    if (!deleting && j >= word.length) { deleting = true; delay = 1500 }
     else if (deleting && j <= 0) { deleting = false; i = (i + 1) % SUGGESTIONS.length; delay = 400 }
     twTimer = setTimeout(tick, delay)
   }
