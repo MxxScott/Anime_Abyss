@@ -9,6 +9,10 @@
       :aria-label="fav ? 'Remove from My List' : 'Add to My List'"
       @click.stop="toggleFav"
     >{{ fav ? '♥' : '♡' }}</button>
+    <button class="card-watch" aria-label="Watch" @click.stop="watchNow">
+      <span class="cw-icon" aria-hidden="true">▶</span>
+      <span class="cw-text">Watch</span>
+    </button>
     <div class="card-body">
       <div class="card-rank">#{{ String(rank).padStart(2, '0') }}</div>
       <div class="card-title">{{ anime.title_english || anime.title }}</div>
@@ -35,4 +39,5 @@ const genre = computed(() =>
   props.anime.genres?.[0]?.name || props.anime.demographics?.[0]?.name || 'Anime')
 const fav = computed(() => has(props.anime.mal_id))
 function toggleFav() { toggle(props.anime) }
+function watchNow() { open(props.anime, { watch: true }) }
 </script>

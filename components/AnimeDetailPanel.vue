@@ -43,10 +43,30 @@
           <p v-else-if="loading" class="ad-muted">Loading details…</p>
 
           <div class="ad-actions">
-            <button class="ad-watch" disabled title="Coming soon">▶ Watch <span>(soon)</span></button>
+            <button class="ad-watch" @click="openWatch">{{ showWatch ? '▾ Where to watch' : '▶ Watch' }}</button>
             <button class="ad-fav" :class="{ on: fav }" @click="toggleFav">
               {{ fav ? '♥ In My List' : '♡ Add to List' }}
             </button>
+          </div>
+
+          <div v-if="showWatch" class="ad-watch-box">
+            <p v-if="watchLoading" class="ad-watch-loading">Finding where to watch…</p>
+            <template v-else-if="watchOpts">
+              <div v-if="freeOpts.length" class="ad-watch-group">
+                <p class="ad-watch-h">Free &amp; official</p>
+                <a v-for="o in freeOpts" :key="o.url" :href="o.url" target="_blank" rel="noopener" class="ad-watch-link free">{{ o.name }}<span class="arr" aria-hidden="true">↗</span></a>
+              </div>
+              <div v-if="watchOpts.youtube && watchOpts.youtube.length" class="ad-watch-group">
+                <p class="ad-watch-h">Free on YouTube · official channels</p>
+                <a v-for="o in watchOpts.youtube" :key="o.url" :href="o.url" target="_blank" rel="noopener" class="ad-watch-link free">{{ o.name }}<span class="arr" aria-hidden="true">↗</span></a>
+              </div>
+              <div v-if="paidOpts.length" class="ad-watch-group">
+                <p class="ad-watch-h">More platforms</p>
+                <a v-for="o in paidOpts" :key="o.url" :href="o.url" target="_blank" rel="noopener" class="ad-watch-link">{{ o.name }}<span class="arr" aria-hidden="true">↗</span></a>
+              </div>
+              <a v-if="watchOpts.justwatch" :href="watchOpts.justwatch.url" target="_blank" rel="noopener" class="ad-watch-all">Find it anywhere on JustWatch <span aria-hidden="true">↗</span></a>
+              <p class="ad-watch-note">Official, legal sources only · availability varies by region.</p>
+            </template>
           </div>
 
           <!-- Trailer -->
@@ -83,16 +103,20 @@
 </template>
 
 <script setup>
-const { isOpen, current, close, open } = useAnimeDetail()
+const { isOpen, current, close, open, pendingWatch } = useAnimeDetail()
 const { getAnimeFull, getRecommendations } = useJikan()
 const { enabled: omdbEnabled, ratingByTitle } = useOmdb()
 const { has, toggle } = useFavourites()
+const { buildOptions } = useWatch()
 
 const data = ref(null)
 const loading = ref(false)
 const imdb = ref('')
 const recs = ref([])
 const showTrailer = ref(false)
+const showWatch = ref(false)
+const watchOpts = ref(null)
+const watchLoading = ref(false)
 
 const title = computed(() => current.value?.title_english || current.value?.title || '')
 const img = computed(() =>
@@ -114,15 +138,31 @@ const fav = computed(() => (current.value ? has(current.value.mal_id) : false))
 const recImg = (r) => r.images?.webp?.image_url || r.images?.jpg?.image_url || ''
 function toggleFav() { if (current.value) toggle(data.value || current.value) }
 
+const freeOpts = computed(() => (watchOpts.value?.platforms || []).filter((o) => o.free))
+const paidOpts = computed(() => (watchOpts.value?.platforms || []).filter((o) => !o.free))
+
+async function openWatch() {
+  showWatch.value = !showWatch.value
+  if (showWatch.value && !watchOpts.value && current.value?.mal_id) {
+    watchLoading.value = true
+    try { watchOpts.value = await buildOptions(current.value.mal_id, title.value) }
+    catch { watchOpts.value = { platforms: [], youtube: [], justwatch: null } }
+    finally { watchLoading.value = false }
+  }
+}
+
 watch(current, async (a) => {
   data.value = null
   imdb.value = ''
   recs.value = []
   showTrailer.value = false
+  showWatch.value = false
+  watchOpts.value = null
   if (!a?.mal_id) return
   loading.value = true
   try { data.value = await getAnimeFull(a.mal_id) } catch { /* keep list data */ }
   loading.value = false
+  if (pendingWatch.value) { pendingWatch.value = false; openWatch() }
   getRecommendations(a.mal_id, 8).then((r) => { recs.value = r }).catch(() => {})
   if (omdbEnabled) {
     const t = data.value?.title_english || data.value?.title || a.title

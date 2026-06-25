@@ -10,6 +10,8 @@ export default defineNuxtConfig({
       omdbApiKey: process.env.NUXT_PUBLIC_OMDB_API_KEY || '',
       whatsappUrl: process.env.NUXT_PUBLIC_WHATSAPP_URL || '',
       telegramUrl: process.env.NUXT_PUBLIC_TELEGRAM_URL || '',
+      // JustWatch region for the 'find anywhere' link (us, gb, ng, jp, …)
+      watchRegion: process.env.NUXT_PUBLIC_WATCH_REGION || 'us',
     },
   },
   app: {

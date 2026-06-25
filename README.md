@@ -2,9 +2,10 @@
 
 A dark, immersive anime discovery web app built with **Nuxt 4**, **Vue 3** and **Tailwind CSS** —
 pulling live data from the [Jikan / MyAnimeList API](https://jikan.moe) and IMDb ratings via
-[OMDb](https://www.omdbapi.com). Browse, search, and dive into thousands of titles inside a
-WebGL-flavoured interface with a slide-out detail panel, a personal watch list that follows your
-account, and a fully native-feeling mobile experience.
+[OMDb](https://www.omdbapi.com). Browse, search and dive into thousands of titles inside a
+WebGL-flavoured interface with a slide-out detail panel, a legal "where to watch" finder, a
+personal watch list that follows your account, light/dark themes, and a fully native-feeling
+mobile experience.
 
 > アニメ・アビス — dive into the depths.
 
@@ -19,6 +20,7 @@ account, and a fully native-feeling mobile experience.
 
 **Explore a title**
 - **Slide-out detail panel** with synopsis, stats, genre chips, MyAnimeList score and **IMDb rating** (when an OMDb key is set).
+- **Where to watch** — the panel's **Watch** button (and a hover-reveal Watch button on every card) opens a list of **official, legal** ways to watch: streaming platforms from MyAnimeList with **free-tier ones flagged**, free **official-YouTube** channels (Muse Asia / Ani-One Asia), and a **JustWatch** "find anywhere" fallback. Region-configurable; no unlicensed sources.
 - **Inline trailer** (privacy-friendly YouTube embed) and a **"Descend Deeper"** recommendations rail.
 
 **Make it yours**
@@ -30,6 +32,7 @@ account, and a fully native-feeling mobile experience.
 - **Clerk authentication** (`@clerk/nuxt`) — modal sign-in / sign-up, hosted account management, and an auth-aware nav (Login / Sign Up swap to your avatar when signed in).
 
 **Experience**
+- **Light / dark theme** — toggle in the nav (and the mobile drawer); persists to `localStorage`, applies before first paint (no flash), with a theme-aware starfield and depth-appropriate shadows in light mode.
 - **Fully responsive** — the top nav collapses into a slide-in sidebar drawer, plus a thumb-reachable **glassmorphic bottom action dock** (Search · Dive · My List · Top) on phones.
 - **Custom cursor + trailing glow** on desktop; auto-disabled on touch devices.
 - **Scroll-reveal motion**, skeleton loaders and graceful error states throughout; honours `prefers-reduced-motion` and safe-area insets.
@@ -49,9 +52,11 @@ pages/
   sign-up/[...slug].vue    # Clerk sign-up route
 composables/
   useJikan.ts              # Jikan API client (retry, search, full, random, recs)
+  useWatch.ts              # legal "where to watch" builder (streaming + YouTube + JustWatch)
   useOmdb.ts               # IMDb ratings via OMDb
-  useAnimeDetail.ts        # slide-out detail panel state
+  useAnimeDetail.ts        # slide-out detail panel state (+ open-to-watch intent)
   useFavourites.ts         # My List (localStorage + Clerk account sync)
+  useTheme.ts              # light/dark theme (persist + toggle)
   useMyList.ts  useSearch.ts  useBrowse.ts  useToast.ts
 plugins/reveal.ts          # v-reveal scroll-reveal directive
 components/
@@ -62,7 +67,7 @@ components/
   CoverCarousel.vue  NewsletterSection.vue  AnimeCard.vue
   AnimeDetailPanel.vue  SearchOverlay.vue  BrowseOverlay.vue
   MyListPanel.vue  MyListStats.vue  FavouritesSync.vue  Toast.vue
-assets/css/tailwind.css    # global styles, animations + responsive layer
+assets/css/tailwind.css    # global styles, animations, responsive + theme layers
 ```
 
 ## Environment variables
@@ -79,6 +84,9 @@ CLERK_TELEMETRY_DISABLED=1
 
 # Optional: IMDb ratings in the detail panel — free key from https://www.omdbapi.com/apikey.aspx
 NUXT_PUBLIC_OMDB_API_KEY=
+
+# Optional: JustWatch region for the "find anywhere" link (us, gb, ng, jp, …)
+NUXT_PUBLIC_WATCH_REGION=us
 
 # Optional: footer community links
 NUXT_PUBLIC_WHATSAPP_URL=
@@ -108,6 +116,7 @@ same Clerk variables (and any optional keys) to the Netlify environment.
 
 ## Notes
 
+- The **Watch** feature links only to official, legal sources — no unlicensed streaming or downloads. Availability varies by region; in-app playback is limited to official YouTube channels and embedded trailers.
 - Live sections fetch client-side on mount; without a connection they show error states while the rest of the page still renders.
 - The hero and carousel use the bundled `three` dependency; if WebGL/three is unavailable, an animated CSS fallback is shown.
 - Favourites use Clerk `unsafeMetadata`, which is appropriate for client-writable preferences like a watch list.
