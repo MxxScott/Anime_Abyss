@@ -2,7 +2,7 @@
   <div>
     <div class="ml-overlay" :class="{ show: isOpen }" @click="close" />
 
-    <aside class="ml-panel" :class="{ open: isOpen }" role="dialog" aria-modal="true" :aria-hidden="!isOpen">
+    <aside class="ml-panel" :class="{ open: isOpen }" aria-label="My List" :aria-hidden="!isOpen">
       <div class="ml-head">
         <h2 class="ml-title">My List <span>{{ items.length }}</span></h2>
         <div class="ml-head-actions">

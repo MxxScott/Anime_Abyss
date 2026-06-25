@@ -2,7 +2,7 @@
   <div>
     <div class="ad-overlay" :class="{ show: isOpen }" @click="close" />
 
-    <aside class="ad-panel" :class="{ open: isOpen }" role="dialog" aria-modal="true" :aria-hidden="!isOpen">
+    <aside class="ad-panel" :class="{ open: isOpen }" aria-label="Anime details" :aria-hidden="!isOpen">
       <button class="ad-close" aria-label="Close" @click="close">✕</button>
 
       <template v-if="current">

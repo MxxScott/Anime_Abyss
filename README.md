@@ -20,7 +20,7 @@ mobile experience.
 
 **Explore a title**
 - **Slide-out detail panel** with synopsis, stats, genre chips, MyAnimeList score and **IMDb rating** (when an OMDb key is set).
-- **Where to watch** — the panel's **Watch** button (and a hover-reveal Watch button on every card) opens a list of **official, legal** ways to watch: streaming platforms from MyAnimeList with **free-tier ones flagged**, free **official-YouTube** channels (Muse Asia / Ani-One Asia), and a **JustWatch** "find anywhere" fallback. Region-configurable; no unlicensed sources.
+- **Where to watch** — the panel's **Watch** button (and a hover-reveal, typewriter-animated Watch button on every card) opens a list of **official, legal** ways to watch: streaming platforms from MyAnimeList with **free-tier ones flagged**, free **official-YouTube** channels (Muse Asia / Ani-One Asia), and a **JustWatch** "find anywhere" fallback. Region-configurable; no unlicensed sources.
 - **Inline trailer** (privacy-friendly YouTube embed) and a **"Descend Deeper"** recommendations rail.
 
 **Make it yours**
@@ -117,6 +117,7 @@ same Clerk variables (and any optional keys) to the Netlify environment.
 ## Notes
 
 - The **Watch** feature links only to official, legal sources — no unlicensed streaming or downloads. Availability varies by region; in-app playback is limited to official YouTube channels and embedded trailers.
+- The slide-out panels use `aria-label` (not `role="dialog"`/`aria-modal`) so third-party dialog-reset CSS can't hide them; a defensive `.ad-panel.open`/`.ml-panel.open` rule keeps them visible.
 - Live sections fetch client-side on mount; without a connection they show error states while the rest of the page still renders.
 - The hero and carousel use the bundled `three` dependency; if WebGL/three is unavailable, an animated CSS fallback is shown.
 - Favourites use Clerk `unsafeMetadata`, which is appropriate for client-writable preferences like a watch list.

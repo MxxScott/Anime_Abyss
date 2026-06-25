@@ -2681,3 +2681,25 @@ body, nav, .mdock, .toast, .ad-panel, .ml-panel, section, footer {
 [data-theme="light"] .btn-primary,
 [data-theme="light"] .nav-cta-btn,
 [data-theme="light"] .card-watch { box-shadow: 0 8px 24px rgba(124, 58, 237, .3); }
+
+/* ── Card Watch typewriter: blinking caret while it types ── */
+.cw-text::after {
+    content: '';
+    display: inline-block;
+    width: 1px;
+    height: 0.9em;
+    margin-left: 1px;
+    vertical-align: middle;
+    background: currentColor;
+    opacity: 0;
+}
+.anime-card:hover .card-watch .cw-text::after,
+.anime-card:focus-within .card-watch .cw-text::after {
+    opacity: 1;
+    animation: cw-caret-blink .7s steps(1, end) infinite;
+}
+@keyframes cw-caret-blink { 50% { opacity: 0; } }
+
+/* Defensive: keep slide-out panels visible even if third-party CSS hides dialogs */
+.ad-panel.open { display: block !important; }
+.ml-panel.open { display: flex !important; }
