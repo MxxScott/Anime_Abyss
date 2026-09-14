@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-const { jFetch } = useJikan()
+const { jFetch, getCuratedAnime } = useJikan()
 const browse = useBrowse()
 const items = ref([])
 const status = ref('loading')
@@ -74,7 +74,10 @@ async function load() {
     items.value = d.data || []
     status.value = 'ok'
   } catch {
-    status.value = 'error'
+    const fallback = await getCuratedAnime()
+    const filtered = type.value ? fallback.filter((a) => a.type?.toLowerCase() === type.value) : fallback
+    items.value = (filtered.length ? filtered : fallback).slice(0, 12)
+    status.value = items.value.length ? 'ok' : 'error'
   }
 }
 

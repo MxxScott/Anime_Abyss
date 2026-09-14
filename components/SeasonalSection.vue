@@ -65,7 +65,7 @@
 </template>
 
 <script setup>
-const { jFetch } = useJikan()
+const { jFetch, getCuratedAnime } = useJikan()
 const { open } = useAnimeDetail()
 const browse = useBrowse()
 const { has, toggle } = useFavourites()
@@ -98,7 +98,9 @@ onMounted(async () => {
     all.value = (d.data || []).sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 20)
     status.value = 'ok'
   } catch {
-    status.value = 'error'
+    const fallback = await getCuratedAnime()
+    all.value = fallback.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 20)
+    status.value = all.value.length ? 'ok' : 'error'
   }
 })
 </script>
