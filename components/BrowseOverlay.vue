@@ -37,7 +37,7 @@
 
 <script setup>
 const { isOpen, ctx, close } = useBrowse()
-const { jFetch } = useJikan()
+const { jFetch, getCuratedAnime } = useJikan()
 
 const items = ref([])
 const status = ref('loading') // loading | ok | empty | error
@@ -63,7 +63,14 @@ async function load() {
     lastPage.value = d.pagination?.last_visible_page || 0
     status.value = items.value.length ? 'ok' : 'empty'
   } catch {
-    status.value = 'error'
+    if (page.value === 1 && (ctx.value.source === 'top' || ctx.value.source === 'season')) {
+      items.value = await getCuratedAnime()
+      hasNext.value = false
+      lastPage.value = 1
+      status.value = items.value.length ? 'ok' : 'error'
+    } else {
+      status.value = 'error'
+    }
   }
 }
 

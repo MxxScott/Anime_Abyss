@@ -1,15 +1,33 @@
 // Thin client for the Jikan (MyAnimeList) v4 API with rate-limit aware retries.
+const REQUEST_GAP = 400
+let requestQueue: Promise<unknown> = Promise.resolve()
+let lastRequestAt = 0
+
 export function useJikan() {
   const BASE = 'https://api.jikan.moe/v4'
+  const CURATED_IDS = [5114, 1535, 9253, 21, 16498, 11061, 40748, 52991, 42310, 38000, 223]
   const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+  function queuedRequest<T>(request: () => Promise<T>): Promise<T> {
+    const run = requestQueue.then(async () => {
+      const remaining = REQUEST_GAP - (Date.now() - lastRequestAt)
+      if (remaining > 0) await wait(remaining)
+      lastRequestAt = Date.now()
+      return request()
+    })
+
+    // Keep a failed request from poisoning the queue for all later sections.
+    requestQueue = run.catch(() => undefined)
+    return run
+  }
 
   async function jFetch<T = any>(path: string, tries = 3): Promise<T> {
     let lastErr: unknown
     for (let i = 0; i < tries; i++) {
       try {
-        const res = await fetch(`${BASE}${path}`)
+        const res = await queuedRequest(() => fetch(`${BASE}${path}`))
         if (res.status === 429) {
-          await wait(1500 * (i + 1)) // rate limited — back off and retry
+          await wait(1800 * (i + 1)) // rate limited — back off and retry
           continue
         }
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -48,5 +66,21 @@ export function useJikan() {
     return (d.data || []).slice(0, n).map((r: any) => r.entry).filter(Boolean)
   }
 
-  return { BASE, wait, jFetch, searchAnime, getAnimeFull, randomAnime, getRecommendations }
+  // Individual anime endpoints remain available when Jikan's ranked collection
+  // endpoints are degraded. This keeps discovery usable without inventing data.
+  async function getCuratedAnime(ids = CURATED_IDS): Promise<any[]> {
+    const results: any[] = []
+    for (const id of ids) {
+      try {
+        const d = await jFetch(`/anime/${id}`)
+        if (d.data) results.push(d.data)
+      } catch {
+        // Continue so one unavailable title does not hide the rest.
+      }
+      await wait(250)
+    }
+    return results
+  }
+
+  return { BASE, wait, jFetch, searchAnime, getAnimeFull, randomAnime, getRecommendations, getCuratedAnime }
 }

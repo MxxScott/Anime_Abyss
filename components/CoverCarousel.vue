@@ -10,14 +10,19 @@
 </template>
 
 <script setup>
-const { jFetch } = useJikan()
+const { jFetch, getCuratedAnime } = useJikan()
 const { open } = useAnimeDetail()
 const host = ref(null)
 let cleanup = () => {}
 
 onMounted(async () => {
   let list = []
-  try { const d = await jFetch('/top/anime?limit=14'); list = d.data || [] } catch { /* offline */ }
+  try {
+    const d = await jFetch('/top/anime?limit=14')
+    list = d.data || []
+  } catch {
+    list = await getCuratedAnime()
+  }
   if (!list.length) return
 
   let THREE
