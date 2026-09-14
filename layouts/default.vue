@@ -1,5 +1,6 @@
 <template>
   <div>
+    <StartupReveal />
     <CustomCursor />
     <StarField />
     <SiteNav />

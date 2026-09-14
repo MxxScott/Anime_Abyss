@@ -19,8 +19,7 @@ const onOut = (e) => { if (e.target.closest?.(HOVER)) grow(false) }
 function grow(big) {
   const r = ring.value
   if (r) {
-    r.style.width = big ? '58px' : '36px'
-    r.style.height = big ? '58px' : '36px'
+    r.style.transform = `translate(-50%, -50%) scale(${big ? 1.62 : 1})`
     r.style.opacity = big ? '1' : '.6'
     r.style.borderColor = big ? 'var(--neon)' : 'var(--glow)'
   }
